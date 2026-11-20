@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#111213" />
+    <title>全搅进去</title>
+    <link rel="icon" href="favicon.svg" />
+    <link rel="stylesheet" href="assets/oil-dollop.css" />
+    <link rel="stylesheet" href="css/game.css" />
+  </head>
+  <body>
+    <header class="site-head">
+      <div class="head-inner">
+        <button class="brand" data-view="home" aria-label="全搅进去 游戏大厅">
+          <img src="favicon.svg" alt="" /><strong>全搅<span>进去</span></strong>
+        </button>
+        <nav aria-label="主导航">
+          <button data-view="home" class="nav-link active"><i data-icon="game"></i>游戏大厅</button>
+          <button data-view="drawing" class="nav-link"><i data-icon="brush"></i>作画</button>
+          <button data-view="archive" class="nav-link"><i data-icon="grid"></i>关卡档案</button>
+          <button data-view="gallery" class="nav-link"><i data-icon="book"></i>收藏板</button>
+          <button data-view="ranking" class="nav-link"><i data-icon="cup"></i>排行榜</button>
+        </nav>
+        <div class="head-tools">
+          <button id="sound" class="icon-btn" aria-label="关闭音效" title="关闭音效">
+            <i data-icon="sound"></i></button
+          ><span class="separator"></span
+          ><button id="profile" class="profile" title="编辑玩家昵称">
+            <span class="avatar"><i data-icon="user"></i></span><span id="player-name">玩家 01</span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section id="home" class="view">
+        <div class="hero">
+          <div class="hero-art">
+            <img
+              src="assets/chroma-vortex.webp"
+              alt="金属调色盘中卷起青蓝、洋红与荧光黄的湿颜料漩涡"
+              fetchpriority="high"
+            />
+          </div>
+          <div class="hero-grid"></div>
+          <div class="hero-copy">
+            <div class="eyebrow hero-eyebrow">
+              <span class="dot"></span> 交互混色实验 <b>/</b> PIGMENT ARCADE
+            </div>
+            <h1>全搅<span>进去</span></h1>
+            <p>从两种颜色的交界划过去，用指尖拉出自己的色带。</p>
+            <div class="hero-actions">
+              <button id="start" class="primary">
+                <i data-icon="play"></i><span>自由搅拌</span><i data-icon="arrow"></i></button
+              ><button id="enter-level" class="secondary">开始闯关</button>
+              <button id="help" class="text-btn">玩法说明</button>
+            </div>
+          </div>
+          <div class="specimen" aria-hidden="true"><span>FIG. 001</span><b></b><em>CHROMATIC VORTEX</em></div>
+          <div class="hero-coords" aria-hidden="true"><span>R</span><span>Y</span><span>B</span><b></b></div>
+        </div>
+        <section class="deck content">
+          <div class="section-heading">
+            <div class="heading-title">
+              <span class="section-mark"></span>
+              <h2>关卡精选</h2>
+              <small>LEVEL SELECT</small>
+            </div>
+            <button data-view="archive" class="text-btn">全部关卡 <i data-icon="arrow"></i></button>
+          </div>
+          <div id="featured" class="cards"></div>
+        </section>
+      </section>
+      <section id="archive" class="view content inner-view" hidden>
+        <div class="eyebrow">EXPERIMENT ARCHIVE</div>
+        <div class="page-title">
+          <h2>关卡档案</h2>
+          <span id="cleared"></span>
+        </div>
+        <div class="filters" id="filters"></div>
+        <div id="archive-cards" class="cards"></div>
+      </section>
+      <section id="ranking" class="view content inner-view" hidden>
+        <div class="eyebrow">LOCAL LEADERBOARD</div>
+        <div class="page-title">
+          <h2>实验排行榜</h2>
+          <span>本机成绩</span>
+        </div>
+        <p class="section-note">按得分从高到低排列，同分时用时较短者优先。</p>
+        <div class="filters" id="rank-filters"></div>
+        <div id="rank-list"></div>
+      </section>
+      <section id="play" class="view content inner-view" hidden>
+        <button class="back text-btn" data-view="home"><i data-icon="back"></i> 返回大厅</button>
+        <div class="play-layout">
+          <div class="studio">
+            <div class="studio-label"><span class="dot"></span><span id="studio-id"></span></div>
+            <div id="dish">
+              <div id="well-wrap">
+                <canvas id="well"></canvas><canvas id="surface"></canvas><span id="finger"></span>
+              </div>
+            </div>
+            <div class="studio-caption">
+              <span>RYB / PIGMENT MIXER</span>
+              <span class="mix-reading">搅拌均匀度 <strong id="uniformity">—</strong></span>
+            </div>
+          </div>
+          <aside class="console">
+            <div class="eyebrow" id="play-mode"></div>
+            <h2 id="level-name"></h2>
+            <p id="prompt" aria-live="polite"></p>
+            <div id="result"></div>
+            <div class="brush-setting">
+              <div><label for="brush-size">画笔大小</label><output id="brush-value" for="brush-size"></output></div>
+              <input id="brush-size" type="range" min="6" max="44" value="24" step="1">
+            </div>
+            <div id="controls"></div>
+            <div class="sample-actions">
+              <button id="pick-color" class="secondary" aria-pressed="false">取色收藏</button>
+              <button data-view="gallery" class="text-btn">色卡收藏板 <i data-icon="arrowUp"></i></button>
+            </div>
+            <p id="pick-note" role="status" hidden></p>
+          </aside>
+        </div>
+      </section>
+      <section id="drawing" class="view content inner-view" hidden>
+        <div class="eyebrow">PAINT STUDIO</div>
+        <div class="page-title"><h2>作画</h2><button class="primary" id="export-art">导出 PNG <i data-icon="arrowUp"></i></button></div>
+        <div class="drawing-layout">
+          <div class="easel">
+            <div class="canvas-tools">
+              <span>亚麻画布 <small>1200 × 900</small></span>
+              <div><button id="undo-art" class="text-btn">撤销</button><button id="redo-art" class="text-btn">重做</button><button id="clear-art" class="text-btn">清空</button></div>
+            </div>
+            <div class="paper-frame"><canvas id="paper" width="1200" height="900" aria-label="作画画布"></canvas></div>
+            <small id="draft-status" role="status"></small>
+          </div>
+          <aside class="drawing-kit">
+            <h3>我的调色板</h3>
+            <p id="no-drawing-colors" class="tip" hidden>先调出喜欢的颜色，点「取色收藏」，就能带到这里作画。</p>
+            <div id="drawing-colors" aria-label="选择画笔颜色"></div>
+            <button id="mix-for-art" class="text-btn">去调色 <i data-icon="arrow"></i></button>
+            <div class="drawing-tools" role="group" aria-label="绘画工具">
+              <button id="ink-tool" class="secondary" aria-pressed="true"><i data-icon="brush"></i>油画笔</button>
+              <button id="rubber-tool" class="secondary" aria-pressed="false">橡皮</button>
+            </div>
+            <div class="brush-setting">
+              <div><label for="art-width">笔触直径</label><output id="art-width-label" for="art-width"></output></div>
+              <input id="art-width" type="range" min="4" max="144" step="2" value="48">
+            </div>
+          </aside>
+        </div>
+      </section>
+      <section id="gallery" class="view content inner-view" hidden>
+        <div class="eyebrow">COLOR COLLECTION</div>
+        <div class="page-title"><h2>色卡收藏板</h2><span id="card-count"></span></div>
+        <div class="board-tools">
+          <button id="back-to-paint" class="text-btn" hidden><i data-icon="back"></i> 回到这盘颜料</button>
+          <button id="rarity-guide" class="text-btn">稀有度说明 <i data-icon="book"></i></button>
+        </div>
+        <div class="filters" id="card-filters"></div>
+        <div id="collection"></div>
+      </section>
+    </main>
+    <footer class="content">
+      <span><b class="dot"></b> <span id="save-status">本机存档已就绪</span></span>
+      <div class="foot-right">
+        <button data-view="gallery">色卡收藏板 <i data-icon="arrowUp"></i></button
+        ><span class="footer-brand">全搅进去 <b>✳</b></span>
+      </div>
+    </footer>
+    <dialog id="modal">
+      <button id="close-modal" class="icon-btn" aria-label="关闭"><i data-icon="close"></i></button>
+      <div id="modal-content"></div>
+    </dialog>
+    <script src="js/pigment.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/collection.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/paint.js"></script>
+    <script src="js/oil.js"></script>
+    <script src="js/drawing.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/vendor/three-paint.js"></script>
+    <script src="js/surface.js"></script>
+  </body>
+</html>

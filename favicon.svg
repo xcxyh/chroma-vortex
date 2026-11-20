@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <title>全搅进去 · 调色刀卷起三色颜料</title>
+  <defs>
+    <linearGradient id="pink" x2=".8" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#ffb4d6"/><stop offset=".42" stop-color="#ff458e"/><stop offset="1" stop-color="#c51e62"/>
+    </linearGradient>
+    <linearGradient id="aqua" x2=".35" y2="1">
+      <stop stop-color="#a9fff2"/><stop offset=".5" stop-color="#19dabd"/><stop offset="1" stop-color="#008b94"/>
+    </linearGradient>
+    <linearGradient id="gold" x2=".65" y2="1">
+      <stop stop-color="#fff683"/><stop offset=".52" stop-color="#ffcf39"/><stop offset="1" stop-color="#f58b34"/>
+    </linearGradient>
+  </defs>
+  <!-- The near edge of the shallow pan sits below the ribbons of colour. -->
+  <path fill="#595b65" d="M5 50c0-14 16-26 39-27 23-2 43 7 44 23l-1 11c-2 15-19 27-41 29C22 88 6 76 5 60z"/>
+  <ellipse cx="46.5" cy="51" rx="42" ry="29.5" transform="rotate(-7 46.5 51)" fill="#f0e5d5"/>
+  <ellipse cx="46.5" cy="51" rx="37.5" ry="25.5" transform="rotate(-7 46.5 51)" fill="#493157"/>
+  <path fill="url(#pink)" d="M15 56C9 44 24 31 39 28c12-3 25-2 31 2-18-2-38 8-41 18-3 8 9 15 25 13-18 8-35 6-39-5Z"/>
+  <path fill="url(#aqua)" d="M25 72c17 4 40-4 44-15 4-10-8-15-18-13 12-7 28-6 32 2 7 15-14 29-36 31-9 1-17-1-22-5Z"/>
+  <path fill="url(#gold)" d="M15 56c7 10 26 10 40 4 8-4 9-8 6-11 9 4 6 12-4 18-17 10-39 7-42-3-1-3-1-6 0-8Z"/>
+  <path fill="#ff96c4" d="M21 45c4-8 15-14 27-15-11 3-19 8-27 15Z"/>
+  <path fill="#7fffe0" d="M45 74c13-2 23-8 29-15-3 8-15 14-29 15Z"/>
+  <!-- A broad metal blade and a wood handle read separately even in the tab icon. -->
+  <path d="m47 53 8-13 10-2 1-5L81 9q3-5 8-2t2 8L71 37l-3 7-8 2-7 9q-8 8-14 4Z" fill="#302a39" stroke="#302a39" stroke-width="3" stroke-linejoin="round"/>
+  <path d="m67 32 15-23q3-4 7-1t0 7L71 35Z" fill="#ffeed4"/>
+  <path d="m68 32 3 3-4 7-7 2-2-3 7-3Z" fill="#a8b5c3"/>
+  <path d="M60 41c3 1 3 3 1 6-4 7-12 12-21 12 2-8 9-16 16-18Z" fill="#f6f4ef"/>
+  <path d="M42 58c4-5 9-5 12-7 0 3-3 6-6 8l-8 1Z" fill="#ff64aa"/>
+</svg>
