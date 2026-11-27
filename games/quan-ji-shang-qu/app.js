@@ -5,17 +5,18 @@
   const initial=()=>({base:'clear',history:[],serial:0,step:0,tools:['pink','bear','pearl'],tip:'shell'});
   let mode='order',level=1,step=0,toolsSelected=['pink','bear','pearl'],tip='shell',engine,activePointer=null,uiFrame=0;
   let drafts={order:initial(),free:initial()},displayed=null,product=null,dialogKind='',toastTimer,opener,receiptId=0,layoutKey='';
+  let caseCard=null,saveTask=0;
   const order=()=>Orders.all[level-1];
   function make(tag,txt,cls){const el=document.createElement(tag);if(txt!=null)el.textContent=txt;if(cls)el.className=cls;return el;}
   function notice(s){$('toast').textContent=s;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{$('toast').hidden=true;},2900);}
   function queueUI(){if(!uiFrame)uiFrame=requestAnimationFrame(()=>{uiFrame=0;updateStats();});}
   function marginProps(){
-    const mat=$('props'),w=mat.clientWidth,h=mat.clientHeight,k=w+'x'+h;
+    const mat=$('props'),w=mat.clientWidth,h=mat.clientHeight,k=w+'x'+h+'/'+(engine?engine.modelId:C.defaultModel);
     if(w<1||h<1||layoutKey===k)return;layoutKey=k;
     const d=Math.min(2,window.devicePixelRatio||1);mat.width=Math.round(w*d);mat.height=Math.round(h*d);
     const g=mat.getContext('2d');g.scale(d,d);
     const scale=Math.max(.49,Math.min(.95,w/505,h/510));
-    const phoneWidth=$('case').getBoundingClientRect().width*322/420;
+    const phoneWidth=$('case').getBoundingClientRect().width*A.geometry(engine?engine.modelId:C.defaultModel).outer[2]/420;
     const side=Math.max(8,(w-phoneWidth)/2);
     // A filled piping bag rests diagonally on the edge of the silicone mat.
     g.save();g.translate(w-side*.36,h*.73);g.scale(scale,scale);g.rotate(.42);
@@ -46,7 +47,7 @@
     for(let i=0;i<w;i+=14){g.fillStyle='#b6ba9466';g.fillRect(i,0,6,h);}
     for(let i=0;i<h;i+=14){g.fillStyle='#f6f0d688';g.fillRect(0,i,w,6);}
     const c=free?'shake':orderData.colors[0],second=free?'milk':(orderData.colors[1]||'milk');
-    g.save();g.translate(122,98);g.rotate(.20);g.scale(.27,.27);g.translate(-210,-355);A.glass(g,'peach');
+    g.save();g.translate(122,98);g.rotate(.20);g.scale(.27,.27);g.translate(-210,-355);A.glass(g,'peach',engine.modelId);g.clip(engine.geom.mask,'evenodd');
     function doll(x,y,index,r){A.drawStamp(g,{x,y,angle:index*.42,phase:index%3,rx:r,ry:r,tip:index%4===0?'rosette':'shell',color:index%5===0?second:c});}
     let n=0;for(let y=71;y<656;y+=29){doll(334,y,n++,22);if(y>182)doll(87,y,n++,22);}
     for(let x=107;x<335;x+=28){doll(x,651,n++,22);if(x>196)doll(x,68,n++,21);}
@@ -93,7 +94,8 @@
     $('chapter').textContent=free?'材料架全部开放':['第一章','第二章','第三章'][Math.floor((level-1)/6)]+' · '+o.chapter;
     $('order-title').textContent=free?'我的定制款':o.name;
     $('request').textContent=free?'选喜欢的底壳和材料，做一款自己的手机壳。':o.guest+'：'+o.message+(o.colors.length>1?' 各色至少占 '+Math.ceil(70/o.colors.length)+'%。':'');
-    $('orders-open').hidden=free;$('base-open').textContent='底壳 · '+C.get('bases',engine.base).name+' ▾';sample();
+    $('orders-open').hidden=free;$('base-open').textContent='底壳 · '+C.get('bases',engine.base).name+' ▾';
+    $('model-open').textContent='机型 · '+engine.geom.model.name+' ▾';sample();
   }
   let lastChecks='';
   function updateStats(){
@@ -118,10 +120,10 @@
   }
   function restore(){
     const d=drafts[mode];engine.history=d.history;engine.base=d.base;engine.serial=d.serial;step=d.step;toolsSelected=d.tools.slice();tip=d.tip;
-    engine.updateBase();engine.rebuild();ticket();toolsUI();updateStats();
+    engine.setModel(store.data.model);ticket();toolsUI();updateStats();
   }
   function switchMode(next){
-    saveDraft();mode=next;document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
+    receiptId++;saveDraft();mode=next;document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
     $('studio').hidden=next==='gallery';$('gallery').hidden=next!=='gallery';
     if(next==='gallery')gallery();else restore();refreshAtelier();
   }
@@ -131,12 +133,27 @@
     $('options').textContent='';$('modal').hidden=false;document.querySelector('.dialog').scrollTop=0;$('close').focus();
   }
   function closeDialog(){
-    receiptId++;ShopRanks.reset();$('modal').hidden=true;dialogKind='';displayed=null;product=null;if(opener&&opener.focus)opener.focus();
+    receiptId++;saveTask++;caseCard=null;resetPreview();ShopRanks.reset();$('modal').hidden=true;dialogKind='';displayed=null;product=null;if(opener&&opener.focus)opener.focus();
   }
   function chooseBase(){showDialog('base','挑一款底壳');C.bases.forEach(c=>{
     const b=make('button',null,'base-choice'),sw=make('i');sw.style.background=c.color;b.append(sw,document.createTextNode(c.name));b.setAttribute('aria-pressed',String(engine.base===c.id));
     b.onclick=()=>{engine.base=c.id;engine.updateBase();ticket();closeDialog();};$('options').appendChild(b);
   });}
+  function chooseModel(){
+    showDialog('model','选择适配机型');
+    C.models.forEach(model=>{
+      const b=make('button',null,'model-choice'),icon=A.surface(64,100),g=icon.getContext('2d');
+      g.scale(64/420,100/720);A.glass(g,engine.base,model.id);
+      const text=make('span');text.append(make('b',model.name),make('small',model.feature));
+      b.append(icon,text);b.setAttribute('aria-pressed',String(model.id===engine.modelId));
+      b.onclick=()=>{
+        engine.setModel(model.id);store.data.model=model.id;
+        ticket();marginProps();updateStats();closeDialog();
+        store.save().then(ok=>{if(!ok)notice('机型已切换，仅在本次打开时保留。');});
+      };
+      $('options').appendChild(b);
+    });
+  }
   function startLevel(id){
     if(mode!=='order')switchMode('order');level=id;drafts.order=initial();restore();closeDialog();
   }
@@ -159,12 +176,55 @@
     if(!d.works.length){const el=make('div',null,'empty');el.append(make('h2','第一张小票，等你来做'),make('p','晾干出单后，作品和用料会一起收进这里。'));
       const b=make('button','去自由挤壳 →','plain');b.onclick=()=>switchMode('free');el.appendChild(b);$('works').appendChild(el);}
     d.works.forEach(w=>{const b=make('button',null,'work'),im=new Image();im.src=w.thumb;im.alt=w.name;b.append(im,make('b',w.name),make('small',w.date+' · '+(w.grade?w.grade+' 级':'自由创作')));
-      b.onclick=()=>{if(im.naturalWidth)openReceipt(w,im,false);};$('works').appendChild(b);});
+      b.onclick=()=>openGalleryWork(w);$('works').appendChild(b);});
+  }
+  async function openGalleryWork(work){
+    const token=++receiptId;
+    for(const source of [work.productImage,work.thumb]){
+      if(!source)continue;
+      const img=new Image();
+      const loaded=await new Promise(resolve=>{img.onload=()=>resolve(true);img.onerror=()=>resolve(false);img.src=source;});
+      if(token!==receiptId||mode!=='gallery')return;
+      if(loaded){
+        openReceipt(work,img,false);
+        if(source===work.thumb)$('storage-note').textContent='此作品仅保留缩略图，导出清晰度受原图限制。';
+        return;
+      }
+    }
+    notice('这件作品的图片暂时无法读取。');
+  }
+  function resetPreview(){
+    $('image-preview').hidden=true;$('full-image').removeAttribute('src');$('view-case').setAttribute('aria-expanded','false');
+  }
+  function showImage(url,title){
+    const img=$('full-image');img.alt=title+'，可长按保存';img.src=url;$('image-preview').hidden=false;
+    $('view-case').setAttribute('aria-expanded',String(title==='手机壳定制图'));img.scrollIntoView({block:'nearest'});
+  }
+  function currentCard(){
+    if(!caseCard)caseCard=ShopSocial.renderCaseCard(displayed,product);
+    return caseCard;
+  }
+  async function saveReceiptImage(isCase){
+    if(!displayed)return;
+    const token=++saveTask,title=isCase?'手机壳定制图':'出单小票';
+    $('save-case').disabled=$('save-ticket').disabled=true;
+    try{
+      const canvas=isCase?currentCard():$('poster').firstChild;
+      await ShopSocial.saveImage(canvas,displayed.name+'-'+title+'.png',(status,url)=>{
+        if(token!==saveTask)return;
+        const msg=status==='album'?(isCase?'已保存高清定制图，可发给定制店或分享':'已保存小票图'):
+          status==='download'?'已开始下载'+title+'，可在下载记录中查看。':'请长按下方图片保存'+title+'。';
+        $('social-status').textContent=msg;notice(msg);
+        if(status==='preview'||(status==='download'&&navigator.maxTouchPoints>0))showImage(url,title);
+      });
+    }catch(e){if(token===saveTask)notice('图片生成失败，请再试一次。');}
+    finally{if(token===saveTask)$('save-case').disabled=$('save-ticket').disabled=false;}
   }
   function socialUI(){for(const key of ['comment','share','note']){
     $(key).hidden=!ShopSocial.can(key);$(key).disabled=ShopSocial.locked(key);
   }}
   function drawPoster(){
+    saveTask++;caseCard=null;resetPreview();$('save-case').disabled=$('save-ticket').disabled=false;
     const p=ShopSocial.render(displayed,product);$('poster').textContent='';$('poster').appendChild(p);ShopSocial.prepare(p,socialUI);
   }
   function rename(){
@@ -184,7 +244,7 @@
   function finish(){
     finishPointer();if(!engine.history.length)return;
     const o=mode==='order'?order():null,judgement=o?Orders.evaluate(o,engine.stats()):null;
-    const img=engine.snapshot(),thumb=A.surface(230,394),g=thumb.getContext('2d');g.drawImage(img,0,0,230,394);
+    const img=engine.snapshot(2),thumb=A.surface(230,394),g=thumb.getContext('2d');g.drawImage(img,0,0,230,394);
     let thumbUrl=thumb.toDataURL('image/webp',.86);
     if(!thumbUrl.startsWith('data:image/webp;')||thumbUrl.length>66000){
       g.globalCompositeOperation='destination-over';g.fillStyle='#f4e4d9';g.fillRect(0,0,230,394);
@@ -192,6 +252,7 @@
     }
     const stamp=Date.now(),d=drafts[mode];
     const w={id:d.workId||('case-'+stamp.toString(36)+'-'+Math.random().toString(36).slice(2,7)),date:ShopRanks.day(),name:o?o.name:'我的奶油壳',
+      modelId:engine.modelId,modelName:engine.geom.model.name,productImage:store.compressProduct(img),
       thumb:thumbUrl,materials:engine.materials(),score:judgement?judgement.score:null,grade:judgement?judgement.grade:'',pass:!!(judgement&&judgement.pass)};
     const old=store.data.works.find(item=>item.id===w.id);if(old)w.name=old.name;d.workId=w.id;
     Foley.play('shutter');const token=++receiptId;const saving=store.record(w,o,judgement,engine);
@@ -231,9 +292,14 @@
     $('tips').onclick=e=>{const b=e.target.closest('[data-tip]');if(b){tip=b.dataset.tip;toolsUI();}};
     $('edits').onclick=e=>{const b=e.target.closest('[data-edit]');if(b)engine.edit(b.dataset.edit);};
     $('undo').onclick=()=>{finishPointer();engine.undo();};$('clear').onclick=()=>confirmAction('清空重挤','清除壳面上的奶油、配件和撒料？','清空壳面',()=>{engine.clear();delete drafts[mode].workId;closeDialog();});
-    $('base-open').onclick=chooseBase;$('orders-open').onclick=levels;$('finish').onclick=finish;
+    $('model-open').onclick=chooseModel;$('base-open').onclick=chooseBase;$('orders-open').onclick=levels;$('finish').onclick=finish;
     $('close').onclick=closeDialog;$('modal').onclick=e=>{if(e.target===$('modal'))closeDialog();};
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&dialogKind)closeDialog();});
+    $('save-case').onclick=()=>saveReceiptImage(true);$('save-ticket').onclick=()=>saveReceiptImage(false);
+    $('view-case').onclick=()=>{
+      if($('view-case').getAttribute('aria-expanded')==='true'){resetPreview();return;}
+      if(displayed)showImage(currentCard().toDataURL('image/png'),'手机壳定制图');
+    };
     $('rename').onclick=()=>{rename();notice('作品名已更新');};$('work-name').onchange=rename;
     for(const key of ['comment','share','note'])$(key).onclick=()=>{if(displayed)ShopSocial.send(key,displayed,msg=>{$('social-status').textContent=msg;},socialUI);};
     for(const key of ['music','sound'])$(key).onclick=()=>{store.data[key]=!store.data[key];soundUI();store.save();notice((key==='music'?'《奶油小铺》':'手作音效')+(store.data[key]?'已开启':'已关闭'));};

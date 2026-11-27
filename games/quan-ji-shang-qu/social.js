@@ -43,6 +43,75 @@
     g.save();g.textAlign='right';label(work.score==null?'自由定制 · 奶油壳DIY':'接单评分  '+work.score+' / 100',510,663,'12px sans-serif',green,155);g.restore();
     return can;
   }
+  function renderCaseCard(work,productCanvas){
+    const card=CreamArt.surface(750,1200),g=card.getContext('2d');
+    const ink='#493831',sage='#576b51',berry='#873951';
+    const font='"PingFang SC","Microsoft YaHei",sans-serif';
+    function label(text,x,y,size,color,bold,maxWidth){
+      g.font=(bold?'bold ':'')+size+'px '+font;g.fillStyle=color;
+      g.fillText(text,x,y,maxWidth||670);
+    }
+    g.fillStyle='#f8f2e5';g.fillRect(0,0,750,1200);
+    for(let x=0;x<750;x+=22){g.fillStyle='rgba(193,169,139,.09)';g.fillRect(x,0,8,1200);}
+    for(let y=0;y<1200;y+=22){g.fillStyle='rgba(255,255,251,.38)';g.fillRect(0,y,750,8);}
+    label('全挤上去 · 奶油胶手机壳定制图',34,51,28,berry,true,513);
+    g.textAlign='right';label(work.date,716,50,17,sage,false,148);g.textAlign='left';
+    g.fillStyle='#d2c6b5';g.fillRect(34,70,682,1);
+    const materials=new Map(work.materials);
+    const lines=[];g.font='20px '+font;
+    for(const group of ['奶油胶','花嘴','配件','撒料']){
+      let line='',key=group;
+      for(const item of materials.get(group)||['—']){
+        const next=line?line+' · '+item:item;
+        if(line&&g.measureText(next).width>527){lines.push([key,line]);key='';line=item;}else line=next;
+      }
+      lines.push([key,line]);
+    }
+    const top=1200-166-lines.length*30,areaHeight=top-90;
+    // Preserve the product aspect ratio, including historical thumbnail sources.
+    const pw=productCanvas.naturalWidth||productCanvas.width,ph=productCanvas.naturalHeight||productCanvas.height;
+    const ratio=Math.min(624/pw,areaHeight/ph);
+    const w=pw*ratio,h=ph*ratio;
+    g.save();g.shadowColor='rgba(103,70,59,.22)';g.shadowBlur=13;g.shadowOffsetY=7;
+    g.drawImage(productCanvas,(750-w)/2,76+(areaHeight-h)/2,w,h);g.restore();
+    g.fillStyle='#fffbf1';g.fillRect(24,top,702,1176-top);
+    g.strokeStyle='#cdbfac';g.strokeRect(24.5,top+.5,701,1175-top);
+    label(work.name,48,top+42,31,ink,true,652);
+    label((work.modelName||'机型未记录')+'  ·  '+(materials.get('底壳')||['底壳未记录']).join('、'),48,top+77,21,sage,false);
+    g.fillStyle='#ded1bf';g.fillRect(48,top+94,653,1);
+    lines.forEach(([key,value],i)=>{
+      label(key,48,top+122+i*30,18,sage,true);label(value,161,top+122+i*30,20,ink,false,537);
+    });
+    label('把这张图发给定制店，按图沟通用料与摆放位置。',48,1157,16,berry,false);
+    return card;
+  }
+  async function saveImage(canvas,filename,report){
+    const dataURL=canvas.toDataURL('image/png'),s=sdk();
+    let status='preview';
+    try{
+      if(s&&typeof s.saveImageToPhotosAlbum==='function'){
+        let filePath=dataURL;
+        if(typeof s.writeTempFile==='function'){
+          try{const tmp=await limit(s.writeTempFile({data:dataURL}),4000);filePath=tmp.filePath||dataURL;}catch(e){/* SDK also accepts a data URL. */}
+        }
+        const result=await limit(s.saveImageToPhotosAlbum({filePath}),30000);
+        if(!result||result.errMsg!=='saveImageToPhotosAlbum:ok')throw Error('相册未确认保存');
+        status='album';
+      }else if(!window.xhs&&typeof canvas.toBlob==='function'&&window.URL&&URL.createObjectURL){
+        const link=document.createElement('a');
+        if('download' in link){
+          const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+          if(blob){
+            const url=URL.createObjectURL(blob);
+            try{link.href=url;link.download=filename;document.body.appendChild(link);link.click();status='download';}
+            finally{link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
+          }
+        }
+      }
+    }catch(e){status='preview';}
+    if(report)report(status,dataURL);
+    return dataURL;
+  }
   function limit(p,ms){return new Promise((resolve,reject)=>{const t=setTimeout(()=>reject(Error('timeout')),ms);
     Promise.resolve(p).then(v=>{clearTimeout(t);resolve(v);},e=>{clearTimeout(t);reject(e);});});}
   function prepare(canvas,changed){
@@ -75,6 +144,6 @@
       },e=>{if(token===sequence)report(/cancel/i.test(String(e&&e.errMsg))?'已取消。':'暂未确认打开，请稍后再试。');}).then(()=>{if(token===sequence){busy=false;changed();}});
     }catch(e){busy=false;report('当前客户端暂时无法打开，请稍后再试。');changed();}
   }
-  window.ShopSocial={render,prepare,send,can,locked:action=>busy||(action==='comment'&&state==='loading')};
+  window.ShopSocial={render,renderCaseCard,saveImage,prepare,send,can,locked:action=>busy||(action==='comment'&&state==='loading')};
 })();
 

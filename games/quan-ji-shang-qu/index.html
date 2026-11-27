@@ -16,7 +16,7 @@
 <div class="ticket-copy"><small id="chapter">第一章 · 新手爆款单</small><h2 id="order-title">草莓小熊</h2><p id="request">想把草莓色的小熊带在身边。</p></div></div>
 <div id="checks" class="checks"></div><div class="progress"><div><span>奶油覆盖</span><strong id="coverage">0% / 12%</strong></div><div class="track"><i id="fill"></i></div></div>
 </aside>
-<section class="stage" aria-label="操作区"><div class="stage-cap"><b><em>✳</em> 裱花垫</b><button id="base-open">底壳 · 冰透原色 ▾</button></div>
+<section class="stage" aria-label="操作区"><div class="stage-cap"><b><em>✳</em> 裱花垫</b><div class="stage-selectors"><button id="base-open">底壳 · 冰透原色 ▾</button><button id="model-open" aria-haspopup="dialog">机型 · iPhone 17 Pro ▾</button></div></div>
 <div class="mat"><div class="ruler"></div><canvas id="props" aria-hidden="true"></canvas><div class="case-slot"><canvas id="case" aria-label="手机壳，按住拖动挤奶油"></canvas></div>
 <span class="cross topcross">+</span><span class="cross bottomcross">+</span></div>
 <div class="stage-foot"><span id="gesture">正在摆好材料…</span><div><button id="undo" disabled aria-label="撤回上一笔" title="撤回上一笔">↶ <span>撤回</span></button><button id="clear" disabled aria-label="清空重挤" title="清空重挤">↺ <span>清空</span></button></div></div>
@@ -36,6 +36,9 @@
 <div id="options" hidden></div>
 <div id="receipt" hidden><div id="poster"></div><label class="name-field">作品名 <input id="work-name" maxlength="18" autocomplete="off"><button id="rename">保存名称</button></label>
 <p id="result-line"></p><p id="storage-note"></p>
+<div class="save-actions"><button id="save-case" class="primary">💾 保存手机壳图</button><button id="save-ticket" class="plain">保存小票图</button></div>
+<button id="view-case" aria-expanded="false" aria-controls="image-preview">查看高清大图 / 长按保存</button>
+<div id="image-preview" hidden><img id="full-image" alt="手机壳定制参考图，可长按保存"></div>
 <div class="social-actions"><button id="comment">晒到评论区</button><button id="share">分享</button><button id="note">发笔记</button></div>
 <p id="social-status" role="status"></p><button id="rank-open" hidden></button><p id="rank-note" hidden></p>
 <section id="ranking" hidden><b>接单今日榜</b><p id="mine"></p><ol id="leaders"></ol><button id="rank-close">收起排行榜</button></section>

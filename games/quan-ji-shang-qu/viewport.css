@@ -32,3 +32,7 @@
 }
 @media(max-height:490px){.shop{overflow:auto}.stage{min-height:160px}.workbench{flex:none}.overlay{padding-bottom:5px}.dialog{max-height:100%}}
 
+
+@media(max-width:400px),(min-width:821px) and (max-width:995px){
+  .stage-cap{padding-left:6px;padding-right:6px}.stage-cap b{font-size:10px;letter-spacing:0}.stage-cap button{font-size:10px;padding:3px 5px}.stage-cap em{display:none}
+}
