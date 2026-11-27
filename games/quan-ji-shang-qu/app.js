@@ -40,24 +40,63 @@
     A.sprinkle(g,{x:side*.52,y:h*.76,id:'pearl',s:scale*1.3,a:.4});A.sprinkle(g,{x:side*.27,y:h*.73,id:'pearl',s:scale*.88,a:0});
     A.sprinkle(g,{x:w-side*.38,y:h*.27,id:'flower',s:scale*1.55,a:.4});
   }
+  function renderSampleCase(orderData,free){
+    const cv=A.surface(420,720),g=cv.getContext('2d');
+    const c=free?'shake':orderData.colors[0],second=free?'milk':(orderData.colors[1]||'milk');
+    const dustId=free?'pearl':((orderData.dust&&orderData.dust[0])||'pearl');
+    const baseId=free?engine.base:'peach';
+    A.glass(g,baseId,engine.modelId);
+    g.save();g.clip(engine.geom.mask,'evenodd');
+    function doll(x,y,index,r){A.drawStamp(g,{x,y,angle:index*.42,phase:index%3,rx:r,ry:r,tip:index%4===0?'rosette':'shell',color:index%5===0?second:c});}
+    let n=0;for(let y=71;y<656;y+=29){doll(334,y,n++,23);if(y>172)doll(87,y,n++,23);}
+    for(let x=107;x<335;x+=28){doll(x,651,n++,23);if(x>196)doll(x,68,n++,22);}
+    for(const [x,y,r] of [[248,185,43],[294,318,46],[154,352,41],[190,544,47],[267,583,41],[127,252,34]])doll(x,y,4,r);
+    for(let i=0;i<22;i++)A.sprinkle(g,{x:108+(i*71)%204,y:198+(i*47)%420,id:dustId,a:(i*.9)%6.28,s:1.15,t:i%5});
+    const pieces=free?['bear','strawberry','bow']:orderData.charms;
+    [[208,295,1.45,-.10],[266,462,1.34,.15],[154,486,1.12,-.16]].forEach(([x,y,scale,angle],i)=>{
+      A.resin(g,{id:pieces[i%pieces.length],x,y,scale,angle},1,false);
+    });
+    g.restore();
+    return cv;
+  }
   function sample(){
     const orderData=order(), free=mode==='free';
     const cv=$('sample'),g=cv.getContext('2d'),w=cv.width,h=cv.height;
     g.clearRect(0,0,w,h);g.fillStyle='#eee4cb';g.fillRect(0,0,w,h);
-    for(let i=0;i<w;i+=14){g.fillStyle='#b6ba9466';g.fillRect(i,0,6,h);}
-    for(let i=0;i<h;i+=14){g.fillStyle='#f6f0d688';g.fillRect(0,i,w,6);}
-    const c=free?'shake':orderData.colors[0],second=free?'milk':(orderData.colors[1]||'milk');
-    g.save();g.translate(122,98);g.rotate(.20);g.scale(.27,.27);g.translate(-210,-355);A.glass(g,'peach',engine.modelId);g.clip(engine.geom.mask,'evenodd');
-    function doll(x,y,index,r){A.drawStamp(g,{x,y,angle:index*.42,phase:index%3,rx:r,ry:r,tip:index%4===0?'rosette':'shell',color:index%5===0?second:c});}
-    let n=0;for(let y=71;y<656;y+=29){doll(334,y,n++,22);if(y>182)doll(87,y,n++,22);}
-    for(let x=107;x<335;x+=28){doll(x,651,n++,22);if(x>196)doll(x,68,n++,21);}
-    for(const [x,y,r] of [[245,165,42],[294,312,46],[154,352,40],[190,544,47],[267,583,40],[127,246,33]])doll(x,y,4,r);
-    const pieces=free?['bear','strawberry','bow']:orderData.charms;
-    [[208,273,1.75,-.12],[266,459,1.52,.17],[160,486,1.15,-.19]].forEach(([x,y,scale,angle],i)=>{
-      A.resin(g,{id:pieces[i%pieces.length],x,y,scale,angle},1,false);
-    });
-    for(let i=0;i<17;i++)A.sprinkle(g,{x:110+(i*71)%197,y:202+(i*47)%416,id:'pearl',a:.2,s:1.1});g.restore();
-    A.resin(g,{id:free?'bow':pieces[0],x:201,y:147,angle:-.18,scale:.72},1,false);
+    for(let i=0;i<w;i+=24){g.fillStyle='#b6ba9458';g.fillRect(i,0,10,h);}
+    for(let i=0;i<h;i+=24){g.fillStyle='#f6f0d680';g.fillRect(0,i,w,10);}
+    const art=renderSampleCase(orderData,free);
+    g.save();g.translate(w*.47,h*.5);g.rotate(.08);
+    const drawH=h*.92,drawW=drawH*420/720;
+    g.drawImage(art,-drawW/2,-drawH/2,drawW,drawH);g.restore();
+    const pieces=free?['bow']:orderData.charms;
+    A.resin(g,{id:pieces[0],x:w*.82,y:h*.72,angle:-.18,scale:1.15},1,false);
+  }
+  function openSampleModal(){
+    const o=order(),free=mode==='free';
+    showDialog('sample',free?'自由定制灵感参考':'参考样图 · '+o.name);
+    const card=A.surface(480,620),g=card.getContext('2d');
+    g.fillStyle='#f3e5db';g.fillRect(0,0,480,620);
+    for(let i=0;i<480;i+=22){g.fillStyle='rgba(255,252,244,.34)';g.fillRect(i,0,10,620);}
+    for(let y=0;y<620;y+=22){g.fillStyle='rgba(255,252,244,.36)';g.fillRect(0,y,480,10);}
+    const art=renderSampleCase(o,free);
+    g.drawImage(art,(480-336)/2,22,336,576);
+    card.className='sample-modal-canvas';
+    $('options').appendChild(card);
+    const meta=make('div',null,'sample-specs');
+    if(free){
+      meta.appendChild(make('p','自由模式所有底壳、机型、奶油胶与配件全部开放，照着灵感发挥或随心混搭都可以！'));
+    }else{
+      meta.appendChild(make('p',o.guest+'：「'+o.message+'」'));
+      const tags=make('div',null,'checks');
+      o.colors.forEach(id=>tags.appendChild(make('span','奶油：'+C.get('creams',id).name)));
+      o.charms.forEach(id=>tags.appendChild(make('span','配件：'+C.get('charms',id).name)));
+      o.dust.forEach(id=>tags.appendChild(make('span','点缀：'+C.get('dust',id).name)));
+      tags.appendChild(make('span','覆盖 ≥ '+o.target+'%'));
+      meta.appendChild(tags);
+    }
+    const go=make('button','知道了，开始挤奶油 →','primary');go.onclick=closeDialog;
+    $('options').append(meta,go);
   }
   function canvasIcon(w,h){return A.surface(w,h);}
   function itemIcon(group,id){
@@ -292,7 +331,7 @@
     $('tips').onclick=e=>{const b=e.target.closest('[data-tip]');if(b){tip=b.dataset.tip;toolsUI();}};
     $('edits').onclick=e=>{const b=e.target.closest('[data-edit]');if(b)engine.edit(b.dataset.edit);};
     $('undo').onclick=()=>{finishPointer();engine.undo();};$('clear').onclick=()=>confirmAction('清空重挤','清除壳面上的奶油、配件和撒料？','清空壳面',()=>{engine.clear();delete drafts[mode].workId;closeDialog();});
-    $('model-open').onclick=chooseModel;$('base-open').onclick=chooseBase;$('orders-open').onclick=levels;$('finish').onclick=finish;
+    $('model-open').onclick=chooseModel;$('base-open').onclick=chooseBase;$('orders-open').onclick=levels;$('finish').onclick=finish;$('sample-open').onclick=openSampleModal;
     $('close').onclick=closeDialog;$('modal').onclick=e=>{if(e.target===$('modal'))closeDialog();};
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&dialogKind)closeDialog();});
     $('save-case').onclick=()=>saveReceiptImage(true);$('save-ticket').onclick=()=>saveReceiptImage(false);
