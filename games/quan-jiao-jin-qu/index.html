@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#abd1b9">
+<title>全搅进去 · 松手出杯</title>
+<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="./viewport.css">
+<script defer src="./viewport.js"></script>
+<script defer src="./photos.js"></script>
+<script defer src="./material.js"></script>
+<script defer src="./paint.js"></script>
+<script defer src="./audio.js"></script>
+<script defer src="./music.js"></script>
+<script defer src="./rank.js"></script>
+<script defer src="./social.js"></script>
+<script defer src="./challenges.js"></script>
+<script defer src="./book.js"></script>
+<script defer src="./studio/cream.js"></script>
+<script defer src="./studio/sprinkles.js"></script>
+<script defer src="./studio/studio.js"></script>
+<script defer src="./game.js"></script>
+</head>
+<body>
+<main class="stand">
+<header><span class="brand">全搅进去<span class="cherry" aria-hidden="true">●</span></span><div class="audio-controls"><button id="music" type="button" aria-pressed="true" disabled>音乐开</button><button id="sound" aria-pressed="true" type="button">音效开</button></div></header>
+<nav class="workspace-tabs" aria-label="游戏入口"><button id="orders-tab" type="button" aria-pressed="true">甜品闯关</button><button id="studio-tab" type="button" aria-pressed="false">甜品自助吧</button><button id="awards-tab" type="button" aria-pressed="false">我的成就 <small id="clear-count">0/72</small></button></nav>
+<section id="awards-space" aria-labelledby="awards-title" hidden>
+  <div class="dessert-ticket"><small>我的成就</small><h1 id="awards-title">甜品师手账</h1><p id="awards-summary"></p></div>
+  <section class="prize-ticket"><strong id="next-prize"></strong><p id="prize-progress"></p><progress id="prize-meter" max="1" value="0"></progress><details><summary>我的奖励</summary><div id="prize-list"></div></details></section>
+  <details id="badge-shelf"><summary>成就徽章 <span id="badge-count">0 / 6</span></summary><div id="badge-list"></div></details>
+  <h2 class="journal-heading">关卡地图</h2><div id="map-filters" aria-label="选择玩法"></div><div id="level-map"></div>
+</section>
+<div id="order-space">
+<section class="ticket" aria-labelledby="order-name">
+  <div class="ticket-copy"><span id="order-number">第 1 / 3 杯</span><h1 id="order-name">草莓云顶</h1><p id="request">要红白粗纹，别把奶油全搅粉啦。</p></div>
+  <figure><img id="target" src="./assets/berry.jpg" alt="这一单的目标纹路"><canvas id="goal" width="140" height="140" hidden></canvas><figcaption id="goal-label">照着搅</figcaption></figure>
+</section>
+<section class="board" id="board" aria-label="搅拌台">
+  <div class="bowl-slot">
+    <div class="bowl" id="bowl" tabindex="0" role="button" aria-label="按住碗内画圈，松手出杯。也可按住空格搅拌。" aria-describedby="gesture">
+      <img id="base" src="./assets/start.jpg" alt="">
+      <canvas id="ink" width="448" height="448" aria-hidden="true"></canvas>
+      <canvas id="surface" width="1" height="1" hidden aria-hidden="true"></canvas>
+      <canvas id="guide" width="640" height="640" hidden aria-hidden="true"></canvas>
+      <i class="orbit" aria-hidden="true">↻</i><i id="contact" hidden></i>
+    </div>
+  </div>
+  <p id="gesture">按住画圈，松手出杯</p>
+  <section id="outcome" aria-live="polite" aria-labelledby="result-name" hidden>
+    <div class="receipt"><div class="print">
+      <div class="cup"><canvas id="imprint" width="240" height="240"></canvas></div>
+      <strong id="seal">出杯</strong><div id="flecks"></div>
+    </div><h2 id="result-name"></h2><p id="result-tip"></p></div>
+  </section>
+</section>
+<section class="under">
+  <div id="readout"><span id="texture">两色入碗</span><strong id="cue"></strong></div>
+  <div id="meter" aria-hidden="true" hidden><i id="window"></i><b id="needle"></b></div>
+  <p id="note">照着样品搅拌，松手出杯</p>
+  <div id="cup-reward" role="status" hidden><strong id="reward-title"></strong><span id="reward-detail"></span><button id="try-prize" type="button" hidden>去自助吧试用</button></div>
+  <button id="action" type="button" hidden></button>
+  <div id="order-social" class="social-row" hidden><button id="order-comment" type="button" class="social-primary" hidden>📸 晒这杯到评论区</button><button id="order-share" type="button" hidden>💌 分享给好友</button><button id="order-note" type="button" hidden>📝 发笔记晒杯</button></div>
+  <p id="order-comment-tip" class="social-hint" hidden>💡 视频页首次晒评论，请先点开一次评论区再进哦</p>
+  <button id="rank-open" type="button" hidden>上榜 · 看今日排名</button>
+  <p id="rank-note" role="status" hidden></p>
+  <p id="order-follow-tip" class="follow-tip" hidden>点右上角 ··· 关注作者，第一时间玩新口味和下个小游戏 ✨</p>
+</section>
+<section id="ranking" hidden aria-label="今日出杯榜">
+  <div class="rank-head"><h2>今日出杯榜</h2><button type="button" id="rank-close">收起</button></div>
+  <p id="mine" role="status"></p><ol id="leaders"></ol>
+</section>
+<footer aria-label="本轮出杯记录"><span>今日出品</span><div id="tray"><i>1</i><i>2</i><i>3</i></div><strong id="count">0 / 3</strong><button id="mode-open" type="button">换玩法</button></footer>
+<dialog id="menu" aria-labelledby="menu-title">
+  <div class="rank-head"><h2 id="menu-title">今天怎么玩？</h2><button id="menu-close" type="button">返回</button></div>
+  <button type="button" data-mode="classic"><strong>松手出杯</strong><small>画圈搅拌，看准时机松手</small></button>
+  <button type="button" data-mode="daily"><strong>今日特调</strong><small>每天一张同题混合订单</small></button>
+  <details id="more-play"><summary>更多玩法</summary>
+    <button type="button" data-mode="trace"><strong>一笔拉花</strong><small>沿线描出爱心、海浪和螺旋</small></button>
+    <button type="button" data-mode="hunt"><strong>旋纹寻色</strong><small>从奶油里挖出指定的一抹颜色</small></button>
+  </details>
+  <button id="menu-map" type="button">查看关卡地图与奖励</button>
+</dialog></div>
+<section id="free-space" hidden>
+  <div class="dessert-ticket"><small id="bar-phase">正在调味</small><h1 id="cup-name">香草鲜奶杯</h1><p id="cup-bill"></p></div>
+  <div class="board dessert-board">
+    <div class="bowl-slot">
+      <div class="bowl" id="free-bowl" tabindex="0" role="button" aria-label="搅拌奶底，或放置小料">
+        <canvas id="free-flat" width="480" height="480"></canvas><canvas id="free-gl" hidden></canvas><div id="garnishes"></div>
+      </div>
+    </div>
+    <p id="free-tip" role="status">点一份淋酱，再用手指拌开。</p>
+  </div>
+  <div class="dessert-tools">
+  <div id="mix-bar"><div class="shelf"><b>奶底</b><div id="bases"></div></div><div class="shelf"><b>淋酱</b><div id="sauces"></div></div>
+    <button id="decorate" type="button" class="bar-primary">撒小料 →</button></div>
+  <div id="garnish-bar" hidden><div class="shelf"><div id="toppings" role="group" aria-label="小料"></div></div>
+    <div class="bar-row"><button id="back-mix" type="button">继续搅拌</button><button id="undo-garnish" type="button">撤下上一份</button></div>
+    <button id="serve" type="button" class="bar-primary">做好了，出杯</button></div>
+  <div id="served-bar" hidden>
+    <form id="recipe-form"><label for="dessert-name">给这杯起名</label><div class="name-row"><input id="dessert-name" maxlength="20" required autocomplete="off"><button id="collect" class="bar-primary">收进食谱</button></div></form>
+    <div id="studio-social" class="social-row" hidden><button id="studio-comment" type="button" class="social-primary" hidden>📸 晒配方到评论区</button><button id="studio-share" type="button" hidden>💌 分享给好友</button><button id="studio-note" type="button" hidden>📝 发笔记晒杯</button></div>
+    <p id="studio-comment-tip" class="social-hint" hidden>💡 视频页首次晒评论，请先点开一次评论区再进哦</p>
+    <div class="bar-row"><button id="edit-cup" type="button">继续装饰</button><button id="new-cup" type="button">做下一杯</button></div>
+    <p class="follow-tip">点右上角 ··· 关注作者，评论区许愿下个新小料 ✨</p>
+  </div>
+  <div class="collections">
+  <details id="recipe-book"><summary>我的甜品食谱 <span id="recipe-count">0 杯</span></summary><div id="recipes"></div></details>
+  <details id="old-colors" hidden><summary>旧版收藏色</summary><div></div></details>
+  </div>
+  </div>
+</section><p id="storage-note" role="status"></p>
+</main>
+</body></html>

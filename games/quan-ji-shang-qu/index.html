@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#faf7ed"><title>全挤上去 · 奶油胶手作间</title>
+<link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./viewport.css">
+</head><body>
+<div class="shop">
+<header><div class="brand"><canvas id="logo" width="56" height="56" aria-hidden="true"></canvas><strong>全挤上去</strong><i>Cream Atelier</i></div>
+<nav aria-label="工作区"><button data-mode="order" aria-pressed="true">接单闯关</button><button data-mode="free">自由挤壳</button><button data-mode="gallery">我的作品集</button></nav>
+<div class="sounds"><button id="music" title="切换背景音乐" aria-label="背景音乐">♫</button><button id="sound" title="切换手作音效" aria-label="手作音效">◖))</button></div></header>
+<main id="studio">
+<div class="heading"><div><span class="eyebrow">DECODEN STUDIO</span><h1>奶油胶手作间<span class="flowerMark" aria-hidden="true">✳</span></h1></div><button id="orders-open" class="plain">订单册 <span>↗</span></button></div>
+<div class="workbench">
+<aside class="ticket"><div class="ticket-head"><b id="ticket-kicker">今日委托</b><span id="ticket-num">ORDER Nº 01</span></div>
+<div class="order-body"><div class="sample"><canvas id="sample" width="246" height="205" aria-label="客人想要的手机壳参考样式"></canvas><i>Style sample</i></div>
+<div class="ticket-copy"><small id="chapter">第一章 · 新手爆款单</small><h2 id="order-title">草莓小熊</h2><p id="request">想把草莓色的小熊带在身边。</p></div></div>
+<div id="checks" class="checks"></div><div class="progress"><div><span>奶油覆盖</span><strong id="coverage">0% / 12%</strong></div><div class="track"><i id="fill"></i></div></div>
+</aside>
+<section class="stage" aria-label="操作区"><div class="stage-cap"><b><em>✳</em> 裱花垫</b><button id="base-open">底壳 · 冰透原色 ▾</button></div>
+<div class="mat"><div class="ruler"></div><canvas id="props" aria-hidden="true"></canvas><div class="case-slot"><canvas id="case" aria-label="手机壳，按住拖动挤奶油"></canvas></div>
+<span class="cross topcross">+</span><span class="cross bottomcross">+</span></div>
+<div class="stage-foot"><span id="gesture">正在摆好材料…</span><div><button id="undo" disabled aria-label="撤回上一笔" title="撤回上一笔">↶ <span>撤回</span></button><button id="clear" disabled aria-label="清空重挤" title="清空重挤">↺ <span>清空</span></button></div></div>
+</section>
+<section class="bench-tools"><div class="tool-heading"><div><span class="eyebrow">MATERIAL BAR</span><h2>材料台</h2></div><i aria-hidden="true">✿</i></div>
+<div class="steps" aria-label="制作步骤"><button data-step="0" aria-pressed="true">① 挤奶油</button><button data-step="1">② 按配件</button><button data-step="2">③ 撒点缀</button></div>
+<div class="materials"><div class="section-label"><b id="material-label">奶油胶</b><span id="choice"></span></div><div id="palette"></div>
+<div id="nozzle-section"><div class="section-label"><b>裱花嘴</b></div><div id="tips"></div></div>
+<div id="edit-section" hidden><div class="section-label"><b>配件调整</b></div><div id="edits"><button data-edit="rotate">↻ 旋转</button><button data-edit="shrink">缩小</button><button data-edit="grow">放大</button><button data-edit="remove">删除</button></div></div>
+</div><button id="finish" class="primary" disabled>✧　晾干出单 <span>→</span></button>
+</section></div></main>
+<section id="gallery" hidden><div class="heading"><div><span class="eyebrow">MY COLLECTION</span><h1>我的作品集</h1></div><small id="work-count"></small></div>
+<div id="badges"></div><div id="works"></div></section>
+<p id="toast" role="status" hidden></p></div>
+<div id="modal" class="overlay" hidden><section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+<div class="dialog-head"><h2 id="dialog-title">出单小票</h2><button id="close" aria-label="关闭">×</button></div>
+<div id="options" hidden></div>
+<div id="receipt" hidden><div id="poster"></div><label class="name-field">作品名 <input id="work-name" maxlength="18" autocomplete="off"><button id="rename">保存名称</button></label>
+<p id="result-line"></p><p id="storage-note"></p>
+<div class="social-actions"><button id="comment">晒到评论区</button><button id="share">分享</button><button id="note">发笔记</button></div>
+<p id="social-status" role="status"></p><button id="rank-open" hidden></button><p id="rank-note" hidden></p>
+<section id="ranking" hidden><b>接单今日榜</b><p id="mine"></p><ol id="leaders"></ol><button id="rank-close">收起排行榜</button></section>
+<button class="primary" id="next">下一单 →</button><p class="follow">喜欢这家小铺？点右上角 ···，在作者旁点「关注」。</p></div>
+</section></div>
+<script src="./catalog.js"></script><script src="./cream-engine.js"></script><script src="./orders.js"></script><script src="./storage.js"></script><script src="./audio.js"></script><script src="./music.js"></script><script src="./viewport.js"></script><script src="./social.js"></script><script src="./rank.js"></script><script src="./app.js"></script>
+</body></html>
+

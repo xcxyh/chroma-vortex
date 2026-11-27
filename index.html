@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>0 卡解压小游戏合集 · 全搅进去 & 全挤上去</title>
+<style>
+  :root {
+    --bg: #f6f1e4;
+    --card: #fffaf0;
+    --ink: #382c26;
+    --muted: #6f6259;
+    --berry: #9e2d4f;
+    --sage: #5c755e;
+    --line: #decbb8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: var(--ink);
+    background:
+      linear-gradient(90deg, rgba(160, 185, 162, 0.12) 50%, transparent 50%) 0 0 / 28px 28px,
+      linear-gradient(rgba(225, 180, 185, 0.12) 50%, transparent 50%) 0 0 / 28px 28px,
+      var(--bg);
+    display: grid;
+    place-items: center;
+    padding: 28px 16px;
+  }
+  main {
+    width: min(760px, 100%);
+  }
+  header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  header small {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #fff4df;
+    border: 1px solid var(--line);
+    color: var(--sage);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+  h1 {
+    margin: 10px 0 8px;
+    font-family: "Songti SC", "STSong", serif;
+    font-size: clamp(26px, 5vw, 36px);
+    color: var(--berry);
+  }
+  header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+  }
+  .card {
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 10px 26px rgba(92, 72, 58, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .tag {
+    align-self: flex-start;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #f5e6ea;
+    color: var(--berry);
+  }
+  .tag.sage {
+    background: #e6efe6;
+    color: var(--sage);
+  }
+  .card h2 {
+    margin: 0;
+    font-family: "Songti SC", "STSong", serif;
+    font-size: 24px;
+  }
+  .card p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+    flex: 1;
+  }
+  .card a {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    padding: 11px 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    background: var(--berry);
+    color: #fffaf4;
+    transition: transform 0.14s ease, opacity 0.14s ease;
+  }
+  .card a.sage-btn {
+    background: var(--sage);
+  }
+  .card a:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <small>COZY MINI-GAME ATELIER</small>
+    <h1>0 卡解压小游戏合集</h1>
+    <p>纯前端 Canvas 2D + WebAudio · 两个项目完全独立，点开即玩</p>
+  </header>
+  <section class="grid">
+    <article class="card">
+      <span class="tag sage">甜品搅拌 · 72 关</span>
+      <h2>《全搅进去》</h2>
+      <p>手指画圈搅出真实奶油拉丝与花纹，松手出杯！包含 72 关甜品闯关、甜品自助吧、6 款实拍小料、原创配乐《糖勺跳跳》与 540×675 晒杯小票。</p>
+      <a class="sage-btn" href="./games/quan-jiao-jin-qu/?preview=1">进入《全搅进去》 →</a>
+    </article>
+    <article class="card">
+      <span class="tag">奶油胶 DIY · 18 关</span>
+      <h2>《全挤上去》</h2>
+      <p>立体裱花奶油手机壳 DIY！8 齿波浪嘴、玫瑰大花嘴、丝带嘴搭配单色/双色奶油胶、8 款 3D 树脂配件与自动生成的 DIY 材料清单出单小票。</p>
+      <a href="./games/quan-ji-shang-qu/?preview=1">进入《全挤上去》 →</a>
+    </article>
+  </section>
+</main>
+</body>
+</html>

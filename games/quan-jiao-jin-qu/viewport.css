@@ -1,0 +1,156 @@
+/* The desktop layouts use their existing bowl widths. On phones the slot gets the
+   space left after the ticket, controls, and home-indicator inset are laid out. */
+@media (max-width: 660px) and (orientation: portrait),
+       (max-height: 500px) and (orientation: landscape) {
+  .stand {
+    --top-inset: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+    --bottom-inset: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+    min-height: 100vh;
+    min-height: var(--play-height, 100vh);
+    height: 100vh;
+    height: var(--play-height, 100vh);
+    display: flex;
+    flex-direction: column;
+    padding: 34px 16px 22px;
+  }
+  @supports (padding-top: max(1px, 2px)) {
+    .stand {
+      padding-top: max(34px, calc(var(--top-inset) + 5px));
+      padding-bottom: max(22px, calc(var(--bottom-inset) + 7px));
+      padding-left: max(16px, calc(var(--safe-area-inset-left, env(safe-area-inset-left, 0px)) + 8px));
+      padding-right: max(16px, calc(var(--safe-area-inset-right, env(safe-area-inset-right, 0px)) + 8px));
+    }
+  }
+  @supports (height: 100dvh) {
+    .stand {
+      min-height: min(100dvh, var(--visual-limit, 100dvh));
+      height: min(100dvh, var(--visual-limit, 100dvh));
+    }
+  }
+  .stand > header {flex:none;height:36px;margin:0 0 3px}
+  .workspace-tabs {flex:none;margin-bottom:7px}
+  .workspace-tabs button {padding:6px 2px;min-height:34px}
+  #storage-note {flex:none;margin:3px 0 0;line-height:12px}
+  #order-space, #free-space, #awards-space {
+    position:relative;
+    flex:1 1 0;
+    min-height:0;
+    overflow:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+  #order-space:not([hidden]),#free-space:not([hidden]) {display:flex;flex-direction:column}
+  #order-space > *,#free-space > * {flex:none;min-width:0}
+  .ticket {margin:3px 4px;padding:8px 12px}
+  .ticket h1 {font-size:28px;margin:2px 0;line-height:1.13}
+  figure img,#goal {width:44px;height:44px}
+  #request,#cup-bill {line-height:1.3}
+  #order-space > .board,#free-space > .board {
+    flex:1 1 0;
+    min-height:130px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:6px 0 2px;
+  }
+  .bowl-slot {
+    width:100%;
+    flex:1 1 0;
+    min-height:0;
+    display:grid;
+    place-items:center;
+    align-items:center;
+    justify-items:center;
+    container-type:size;
+  }
+  .bowl-slot > .bowl, #free-space .bowl-slot > #free-bowl {
+    width:var(--bowl-side, 180px);
+    max-width:100%;
+    margin:0;
+  }
+  @supports (width: 1cqh) and (container-type: size) {
+    .bowl-slot > .bowl {width:min(100cqw,100cqh,345px)}
+    #free-space .bowl-slot > #free-bowl {width:min(100cqw,100cqh,300px)}
+  }
+  #gesture {flex:none;margin:5px 0 0;padding:4px 13px}
+  .under {min-height:0;margin:5px 1px 0}
+  #meter {margin:7px 2px 4px}
+  #note {line-height:1.3}
+  footer {margin-top:6px;padding:3px 0 0}
+  #mode-open {margin-top:0;margin-bottom:0;min-height:36px}
+  #cup-reward {position:relative;margin:0 0 4px;padding:6px 8px}
+  #cup-reward:has(#try-prize:not([hidden])) {padding-right:100px}
+  #try-prize {min-height:32px; margin:2px 0}
+  @supports selector(:has(*)) {
+    #try-prize {position:absolute;right:4px;top:50%;transform:translateY(-50%)}
+  }
+  #action {padding:8px 10px;min-height:40px}
+  .social-row {margin:4px 0 2px}
+  .social-row button {min-height:34px;padding:5px 6px;font-size:12px}
+  .follow-tip {margin:3px 0 0;font-size:11px}
+  #rank-open {min-height:32px;padding:5px}
+  #ranking:not([hidden]) {
+    position:absolute;z-index:3;top:0;right:0;bottom:0;left:0;margin:0;
+    display:flex;flex-direction:column;overflow:auto;border:1px solid var(--line);
+  }
+  #leaders {min-height:0;max-height:none;overflow:auto}
+  #awards-space {padding:0 3px 6px}
+  #free-space .dessert-ticket {margin-top:3px}
+  #cup-name {font-size:23px;line-height:1.14;margin:2px 0}
+  #free-space #free-tip {flex:none;margin:4px 0;line-height:1.3;font-size:12px}
+  #mix-bar .shelf {align-items:center;padding:2px 0}
+  #bases,#sauces {flex:1 1 0;min-width:0;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  #bases button,#sauces button {flex:none;min-height:36px}
+  #garnish-bar .shelf {padding:4px 0}
+  #decorate,#serve {margin:3px 0;min-height:38px}
+  #recipe-book,#old-colors {margin-top:3px;padding:3px 0}
+  #recipes,#old-colors > div {max-height:19vh;overflow:auto}
+  #menu {max-height:calc(var(--play-height, 100vh) - 100px);overflow:auto}
+}
+@media (max-height: 720px) and (orientation: portrait),
+       (max-height: 500px) and (orientation: landscape) {
+  .receipt {width:95%;max-width:370px;padding:8px;display:grid;grid-template-columns:65px 1fr;grid-gap:3px 8px;align-items:center}
+  .print {width:59px;height:59px;margin:0;grid-row:1/3}
+  #seal {font-size:13px;right:-6px;padding:1px}
+  #result-name {font-size:20px;align-self:end}
+  #result-tip {margin:0;font-size:12px;align-self:start;line-height:1.3}
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .stand {max-width:860px}
+  #order-space:not([hidden]),#free-space:not([hidden]) {
+    display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+    grid-template-rows:auto auto auto 1fr;grid-column-gap:14px;align-items:start;
+  }
+  #order-space > .board,#free-space > .board {grid-area:1/1/5/2;height:100%;min-height:0}
+  #order-space .ticket,#order-space .under,#order-space footer,#free-space > :not(.board) {grid-column:2}
+  #order-space footer {align-self:end}
+  #ranking:not([hidden]) {grid-column:auto}
+}
+@media (max-width: 660px) and (orientation: portrait),
+       (max-height: 500px) and (orientation: landscape) {
+  .collections {display:flex;flex-wrap:wrap;align-items:baseline}
+  .collections details {flex:1 0 auto;margin-right:6px}
+  .collections details[open] {flex-basis:100%}
+  .collections summary {font-size:13px}
+}
+@media (max-height: 620px) and (orientation: portrait) {
+  #free-space .dessert-ticket {margin:0 0 2px;padding-top:0}
+  #free-space #bar-phase {display:none}
+  #free-space #cup-name {font-size:21px}
+  #free-space #cup-bill {font-size:12px}
+  #order-space.is-result .ticket {transform:none;padding:3px 10px}
+  #order-space.is-result .ticket h1 {font-size:18px;display:inline}
+  #order-space.is-result .ticket p,#order-space.is-result figure {display:none}
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .stand {display:grid;grid-template-columns:1fr 1.25fr;grid-template-rows:36px minmax(0,1fr) 12px;grid-row-gap:4px}
+  .stand > header {grid-area:1/1;padding-right:10px}
+  .workspace-tabs {grid-area:1/2;margin:0 74px 0 0}
+  #order-space,#awards-space,#free-space {grid-area:2/1/3/3}
+  #storage-note {grid-area:3/1/4/3;margin:0}
+  #free-space:not([hidden]) {grid-template-rows:auto minmax(0,1fr);align-items:stretch}
+  #free-space > .dessert-ticket {grid-area:1/1;margin:0}
+  #free-space > .dessert-board {grid-area:2/1;height:auto}
+  #free-space > .dessert-tools {grid-area:1/2/3/3;min-height:0;overflow:auto}
+}
